@@ -1,0 +1,31 @@
+# WebStorm workspace configuration
+.idea/
+
+# Build result
+plugins/
+*.tsbuildinfo
+
+# Auto generated docs
+api-docs/public
+api-docs/firebase-debug.log
+api-docs/.firebase/
+
+# User prefs
+.vscode/
+
+# Mac files
+.DS_Store
+
+# npm pack files
+*.tgz
+
+# private files
+accounts.json
+char-info.cache.json
+servers.cache.json
+node_modules/*
+exalt-resources/*
+plugin-src/mode_modules/
+
+index.js
+plugin-src/node_modules/typescript/loc/lcl/RUS/Targets/TypeScriptProjectProperties.xaml.lcl
