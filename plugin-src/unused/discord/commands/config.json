@@ -1,0 +1,58 @@
+{
+    "location": {
+        "description": "find the last known location of a player",
+        "aliases": ["loc", "find"],
+        "permissions": ["Member"],
+        "arguments": {
+            "playerName": "required"
+        },
+        "ratelimit": {
+            "Member": 15
+        }
+    },
+
+
+
+
+    "track": {
+        "description": "add or remove players and configure your tracklist",
+        "permissions": ["Nitro", "Premium", "Staff", "Owner"],
+        "arguments": {
+            "subCommand": "required",
+            "playerName": "optional" 
+        },
+        "ratelimit": {
+
+        }
+    },
+    "gold": {
+        "description": "get the current account gold of a player",
+        "permissions": ["Nitro", "Premium", "Staff", "Owner"],
+        "arguments": {
+            "playerName": "required" 
+        }
+    },
+    "tracksettings": {
+        "description": "configure your tracking notification settings",
+        "permissions": ["Nitro", "Premium", "Staff", "Owner"]
+    },
+
+
+    
+
+    "gettrackers": {
+        "description": "return a list of discord users tracking an ingame player",
+        "permissions": ["Staff", "Owner"],
+        "arguments": {
+            "playerName": "required" 
+        }
+    },
+    "ping": {
+        "description": "restart the bot",
+        "permissions": ["Staff", "Owner"]
+    },
+    "restart": {
+        "description": "restart the bot",
+        "permissions": ["Owner"]
+    }
+}

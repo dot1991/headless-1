@@ -1,0 +1,39 @@
+{
+  "name": "headless",
+  "version": "1.0.1",
+  "description": "A console based modular client for RotMG Unity built with Node.js and TypeScript",
+  "main": "headless/index.js",
+  "types": "headless/index.d.ts",
+  "files": [
+    "headless/"
+  ],
+  "dependencies": {
+    "chalk": "^2.3.0",
+    "fast-xml-parser": "^3.17.4",
+    "he": "^1.2.0",
+    "node-rsa": "^0.4.2",
+    "reflect-metadata": "^0.1.12",
+    "socks": "^2.3.3",
+    "xml2json": "^0.12.0",
+    "yargs": "^16.1.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.15",
+    "@types/mocha": "^8.2.0",
+    "@types/node": "^8.10.60",
+    "@types/node-rsa": "^0.4.0",
+    "chai": "^4.3.0",
+    "mocha": "^8.3.0",
+    "ts-mockito": "^2.6.1",
+    "tsai": "^2.0.0",
+    "tslint": "^5.20.1",
+    "typedoc": "^0.15.8",
+    "typescript": "^3.8.3"
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "index": "tsai --path bot-src --exclude stdlib --overwrite",
+    "lint": "tslint -p ."
+  },
+  "author": "him"
+}

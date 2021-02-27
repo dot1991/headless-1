@@ -1,0 +1,14 @@
+{
+    "Redis": {
+        "host": "127.0.0.1",
+        "port": 6379
+    },
+
+    "MySQL": {
+        "host": "127.0.0.1",
+        "port": 3306,
+        "database": "realmspy",
+        "username": "realmspy",
+        "password": "realmspy"
+    }
+}

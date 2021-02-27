@@ -1,0 +1,25 @@
+{
+  "States": {
+    "Started": 0,
+    "FindingPortals": 1,
+    "WalkingToPortals": 2,
+    "WalkingToStart": 3,
+    "Waiting": 4
+  },
+  "Objects": {
+    "RealmPortal": 1810,
+    "VaultPortal": 1824,
+    "GhallPortal": 1839,
+    "BazaarPortal": 1872
+  },
+  "Positions": {
+    "Portals": {
+      "x": 127,
+      "y": 153
+    },
+    "Start": {
+      "x": 127,
+      "y": 182
+    }
+  }
+}

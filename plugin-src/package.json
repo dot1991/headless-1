@@ -1,0 +1,17 @@
+{
+  "name": "headless-plugins",
+  "private": true,
+  "scripts": {
+    "compile": "tsc -p ."
+  },
+  "dependencies": {
+    "eris": "^0.14.0",
+    "handy-redis": "^2.1.0",
+    "mysql2": "^2.2.5",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.2",
+    "typescript": "^4.0.3"
+  }
+}

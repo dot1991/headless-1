@@ -1,0 +1,9 @@
+{
+  "buildVersion": "1.3.2.1.0",
+  "clientToken": "8bV53M5ysJdVjU4M97fh2g7BnPXhefnc",
+
+  "httpControl": true,
+  "httpPort": 8888,
+
+  "tutorialMode": true
+}

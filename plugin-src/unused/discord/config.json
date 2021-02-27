@@ -1,0 +1,62 @@
+{
+    "Prefix": "!",
+    "Token": "NzkyMTY2MjI3MzMwMDcyNjI3.X-ZwSg.XD_6pC68HWzbjtr_GRERn--L8nU",
+    "RunningMode": "production",
+    "GuildId": "790273260666880072",
+    "OwnerId": "789576983532142592",
+    "InviteCode": "https://discord.gg/Vj4hfhmC",
+    "EmbedColor": 0,
+    "EmbedColorAlt": "#000000",
+    "EmbedFooterName": "rotmg.network",
+    "EmbedFooterUrl": "https://i.imgur.com/byo8d9u.png",
+
+    "Channels": {
+        "Announcements": "790280333752795206",
+        "General": "790273261140312178",
+
+        "TrackCommands": "790280413049651262",
+        "RealmCommands": "790945354660052992",
+        "BotStatus": "790977951160205362",
+
+        "RealmOpen": "791095027405029416",
+        "RealmClose": "791095106341830657",
+        "RealmSurge": "790376197506334750",
+
+        "KeyPops": "790375569249402940",
+        "InvalidNames": "790279966704926722",
+        "NullNames": "790279989034483752",
+        "NameChanges": "790279728023732224",
+        "GameManagers": "790279859951108106",
+        "HighFamePlayers": "790279587778134016",
+        "HighGoldPlayers": "790279627326226472",
+        "GoldPurchases": "790279669039366175",
+
+        "AllRaids": "790375813173870642",
+        "OryxRaids": "792168076786663444",
+        
+        "OryxSanctuary": "790278580265025546",
+        "Dungeoneer": "790374894742536193",
+        "PubHalls": "790278632345960458",
+        "SpaceTravel": "790278733298532402",
+        "Null": "790289292672106496",
+        "Exalted": "790289915203813417",
+        "OryxChads": "790289610257203211",
+        "Shatters": "790278661164367873",
+        "Fungal": "790278698384228362",
+        "SBC": "790278809374162965",
+        "PestControl": "790278769125490689",
+        "WhiteGarden": "790279111451869185",
+
+        "StaffChat": "790276238274854942",
+        "StaffLogging": "792840203571298314",
+        "StaffCommands": "792840307485573150"
+    },
+    "Roles": {
+        "Owner": "790274357200158730",
+        "Staff": "790274613513945129",
+        "Member": "790273893800607785",
+        "Everyone": "790273260666880072"
+    },
+    "Emojis": {},
+    "urls": {}
+}

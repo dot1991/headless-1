@@ -20,12 +20,17 @@ api-docs/.firebase/
 *.tgz
 
 # private files
+accounts.txt
 accounts.json
+accounts_new.json
 char-info.cache.json
 servers.cache.json
 node_modules/*
 exalt-resources/*
 plugin-src/mode_modules/
+plugins/
 
 index.js
 plugin-src/node_modules/typescript/loc/lcl/RUS/Targets/TypeScriptProjectProperties.xaml.lcl
+plugin-src/node_modules/typescript/loc/lcl/ITA/Targets/TypeScriptCompile.xaml.lcl
+plugin-src/unused/tools/servers.json
