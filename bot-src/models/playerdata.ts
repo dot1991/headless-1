@@ -1,4 +1,4 @@
-    import {Classes, GuildRank, WorldPosData, ObjectStatusData, StatData} from './realmlib';
+import {Classes, GuildRank, WorldPosData} from '../../realmlib/net';
 
 /**
  * The properties of a player, or other entity such as an enemy

@@ -1,5 +1,5 @@
-import {ObjectStatusData} from '../../realmlib/net';
-import {ConditionEffect, hasEffect} from './condition-effect';
+import {ObjectStatusData, ConditionEffect} from '../../realmlib/net';
+import {hasEffect} from './condition-effect';
 import {Entity} from './entity';
 import {GameObject} from './object';
 

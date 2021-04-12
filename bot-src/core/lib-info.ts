@@ -1,4 +1,4 @@
-import {LibraryInfo} from './../models/plugin-info';
+import {LibraryInfo} from '../models';
 
 /**
  * A type which can be created using `new` syntax.

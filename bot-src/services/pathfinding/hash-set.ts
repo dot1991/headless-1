@@ -4,7 +4,7 @@ import {Hashable} from './hashable';
  * A basic hash set implementation.
  */
 export class HashSet<T extends Hashable> {
-    private map: {
+    private readonly map: {
         [hash: string]: T;
     };
 

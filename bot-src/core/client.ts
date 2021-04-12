@@ -3,6 +3,8 @@ import {Socket} from 'net';
 import {
     AoeAckPacket,
     AoePacket,
+    Classes,
+    ConditionEffect,
     CreatePacket,
     CreateSuccessPacket,
     DamagePacket,
@@ -29,13 +31,13 @@ import {
     StatType,
     UpdateAckPacket,
     UpdatePacket,
-    WorldPosData,
+    WorldPosData
 } from '../../realmlib/net';
 
 import * as rsa from '../crypto/rsa';
 import {getHooks, PacketHook} from '../decorators';
 // tslint:disable-next-line: max-line-length
-import {Account, CharacterInfo, Classes, ConditionEffect, Entity, Events, GameId, getDefaultPlayerData, hasEffect, MapInfo, MapTile, MoveRecords, PlayerData, Proxy, Server} from '../models';
+import {AccessToken, Account, CharacterInfo, Entity, Events, GameId, getDefaultPlayerData, hasEffect, MapInfo, MapTile, MoveRecords, PlayerData, Proxy, Server} from '../models';
 import {Runtime} from '../runtime';
 import {Logger, LogLevel, NodeUpdate, Pathfinder, Random} from '../services';
 import {createConnection, delay} from '../util';
@@ -61,6 +63,7 @@ export class Client {
     alias: string;
     guid: string;
     password: string;
+    token: AccessToken;
 
     readonly runtime: Runtime;
 
@@ -92,7 +95,13 @@ export class Client {
         this.tutorialOnly = toggle
     }
 
+    set timeMod(multiplier: number) {
+        this.timeModifier = multiplier;
+    }
 
+    get timeMod(): number {
+        return this.timeModifier;
+    }
 
     // client connection data
     private socketConnected: boolean;
@@ -117,6 +126,7 @@ export class Client {
     private frameUpdateTimer: NodeJS.Timer;
     private needsNewCharacter: boolean
     private tutorialOnly: boolean = false;
+    private timeModifier: number = 1;
 
     private connectionGuid: string;
     private key: number[];
@@ -208,36 +218,29 @@ export class Client {
     }
 
     /**
-     * Removes all event listeners and releases any resources held by the client.
-     * This should only be used when the client is no longer needed.
+     * Removes all event listeners and releases any resources held by the client
+     * This should only be used when the client is no longer needed
      */
     destroy(processTick: boolean = true): void {
-        // packet io.
         if (this.io) {
             this.io.detach();
         }
 
-        // timers.
         if (this.frameUpdateTimer) {
             clearInterval(this.frameUpdateTimer);
         }
-
         if (this.socketConnected) {
             this.socketConnected = false;
             this.runtime.emit(Events.ClientDisconnect, this);
         }
-
-        // client socket
         if (this.clientSocket) {
             this.clientSocket.removeAllListeners('close');
             this.clientSocket.removeAllListeners('error');
             this.clientSocket.destroy();
         }
-
-        // resources
         // if we're unlucky, a packet hook, or onFrame was called and preempted this method.
         // to avoid a nasty race condition, release these resources on the next tick after
-        // the io has been detached and the frame timers have been stopped.
+        // the io has been detached and the frame timers have been stopped
         if (processTick) {
             process.nextTick(() => {
                 this.mapTiles = undefined;
@@ -249,8 +252,8 @@ export class Client {
 
     /**
      * Switches the client connect to a proxied connection. Setting this to
-     * `undefined` will remove the current proxy if there is one.
-     * @param proxy The proxy to use.
+     * `undefined` will remove the current proxy if there is one
+     * @param proxy The proxy to use
      */
     setProxy(proxy: Proxy): void {
         if (proxy) {
@@ -375,9 +378,6 @@ export class Client {
         if (time === -1) {
             time = this.getTime();
         }
-
-        // if the player is currently invincible, they take no damage.
-        // tslint:disable-next-line: no-bitwise
         const invincible =
             ConditionEffect.INVINCIBLE |
             ConditionEffect.INVULNERABLE |
@@ -385,31 +385,24 @@ export class Client {
         if (hasEffect(this.playerData.condition, invincible)) {
             return false;
         }
-
         // work out the defense
         let def = this.playerData.def;
         if (hasEffect(this.playerData.condition, ConditionEffect.ARMORED)) {
             def *= 2;
         }
-        if (
-            armorPiercing ||
-            hasEffect(this.playerData.condition, ConditionEffect.ARMORBROKEN)
-        ) {
+        if (armorPiercing || hasEffect(this.playerData.condition, ConditionEffect.ARMORBROKEN)) {
             def = 0;
         }
-
-        // work out the actual damage.
+        // work out the actual damage
         const min = (amount * 3) / 20;
         const actualDamage = Math.max(min, amount - def);
 
-        // apply it and check for autonexusing.
+        // apply it and check for autonexusing
         this.playerData.hp -= actualDamage;
         this.clientHP -= actualDamage;
         Logger.log(
             this.alias,
-            `Took ${actualDamage.toFixed(0)} damage. At ${this.clientHP.toFixed(
-                0
-            )} health.`
+            `Took ${actualDamage.toFixed(0)} damage at ${this.clientHP.toFixed(0)} health`
         );
         return this.checkHealth(time);
     }
@@ -470,30 +463,24 @@ export class Client {
 
     @PacketHook()
     private onDeath(deathPacket: DeathPacket): void {
-        // check if it was our client that died
         if (deathPacket.accountId !== this.playerData.accountId) {
             return;
         }
-
         Logger.log(
             this.alias,
             `The character ${deathPacket.charId} has died`,
             LogLevel.Warning
         );
-
-        // update the char info.
         this.charInfo.charId = this.charInfo.nextCharId;
         this.charInfo.nextCharId++;
         this.needsNewCharacter = true;
 
-        // update the char info cache.
         this.runtime.accountService.updateCharInfoCache(
             this.guid,
             this.charInfo
         );
 
         Logger.log(this.alias, 'Connecting to the nexus..', LogLevel.Info);
-        // reconnect to the nexus.
         this.connectToNexus();
     }
 
@@ -504,10 +491,7 @@ export class Client {
         }
         try {
             const json = JSON.parse(notification.message);
-            if (
-                json.key === 'server.plus_symbol' &&
-                notification.color === 0x00ff00
-            ) {
+            if (json.key === 'server.plus_symbol' && notification.color === 0x00ff00) {
                 const healAmount = parseInt(json.tokens.amount, 10);
                 this.addHealth(healAmount);
             }
@@ -628,11 +612,9 @@ export class Client {
 
     @PacketHook()
     private onReconnectPacket(reconnectPacket: ReconnectPacket): void {
-        // if there is a new host, then switch to it
         if (reconnectPacket.host !== '') {
             this.internalServer.address = reconnectPacket.host;
         }
-        // same story with the name
         if (reconnectPacket.name !== '') {
             this.internalServer.name = reconnectPacket.name;
         }
@@ -693,11 +675,17 @@ export class Client {
                     LogLevel.Error
                 );
                 this.key = [];
-                this.internalGameId = GameId.Nexus;
+                this.internalGameId = this.tutorialOnly ? GameId.Tutorial : GameId.Nexus;
                 this.keyTime = -1;
                 break;
             case FailureCode.ServerFull:
-
+                Logger.log(
+                    this.alias,
+                    `Server is full`,
+                    LogLevel.Warning
+                );
+                this.reconnectCooldown = 5000;
+                break;
             case FailureCode.ServerQueue:
                 Logger.log(
                     this.alias,
@@ -757,18 +745,13 @@ export class Client {
         aoeAck.time = this.lastFrameTime;
         aoeAck.position = this.worldPos.clone();
         let nexused = false;
-        if (
-            aoePacket.pos.squareDistanceTo(this.worldPos) <
-            aoePacket.radius ** 2
-        ) {
-            // apply the aoe damage if in range.
+        if (aoePacket.pos.squareDistanceTo(this.worldPos) < aoePacket.radius ** 2) {
             nexused = this.applyDamage(
                 aoePacket.damage,
                 aoePacket.armorPiercing,
                 this.getTime()
             );
         }
-        // only reply if the client didn't nexus.
         if (!nexused) {
             this.send(aoeAck);
         }
@@ -802,15 +785,8 @@ export class Client {
 
         const x = Math.floor(this.worldPos.x);
         const y = Math.floor(this.worldPos.y);
-        if (
-            this.mapTiles[y * this.mapInfo.width + x] &&
-            this.runtime.resources.tiles[
-                this.mapTiles[y * this.mapInfo.width + x].type
-                ]
-        ) {
-            this.tileMultiplier = this.runtime.resources.tiles[
-                this.mapTiles[y * this.mapInfo.width + x].type
-                ].speed;
+        if (this.mapTiles[y * this.mapInfo.width + x] && this.runtime.resources.tiles[this.mapTiles[y * this.mapInfo.width + x].type]) {
+            this.tileMultiplier = this.runtime.resources.tiles[this.mapTiles[y * this.mapInfo.width + x].type].speed;
         }
 
         const elapsedMS = this.currentTickTime - this.lastTickTime;
@@ -857,17 +833,6 @@ export class Client {
             this.send(ack);
         }
     }
-
-    // @PacketHook()
-    // private onText(textPacket: TextPacket): void {
-    //     Logger.log('Packet', `TextPacket received:\nName: ${textPacket.name}\nObjectId: ${textPacket.objectId}`)
-    //     console.log(`NumStars: ${textPacket.numStars}`);
-    //     console.log(`BubbleTime: ${textPacket.bubbleTime}`);
-    //     console.log(`Recipient: ${textPacket.recipient}`);
-    //     console.log(`Text: ${textPacket.text}`);
-    //     console.log(`IsSupporter: ${textPacket.isSupporter}`);
-    //     console.log(`StarBackground: ${textPacket.starBackground}`);
-    // }
 
     @PacketHook()
     private onCreateSuccess(createSuccessPacket: CreateSuccessPacket): void {
@@ -1014,7 +979,6 @@ export class Client {
             clearInterval(this.frameUpdateTimer);
             this.frameUpdateTimer = undefined;
         }
-
         if (this.reconnectCooldown > 0) {
             Logger.log(
                 this.alias,
@@ -1056,29 +1020,13 @@ export class Client {
     }
 
     walkTo(x: number, y: number): void {
-        // tslint:disable-next-line: no-bitwise
-        if (
-            hasEffect(
-                this.playerData.condition,
-                ConditionEffect.PARALYZED || ConditionEffect.PAUSED
-            )
-        ) {
-            if (
-                !hasEffect(
-                    this.playerData.condition,
-                    ConditionEffect.PARALYZED_IMMUNE
-                )
-            ) {
+        if (hasEffect(this.playerData.condition, ConditionEffect.PARALYZED || ConditionEffect.PAUSED)) {
+            if (!hasEffect(this.playerData.condition, ConditionEffect.PARALYZED_IMMUNE)) {
                 return;
             }
         }
         if (hasEffect(this.playerData.condition, ConditionEffect.PETRIFIED)) {
-            if (
-                !hasEffect(
-                    this.playerData.condition,
-                    ConditionEffect.PETRIFIED_IMMUNE
-                )
-            ) {
+            if (!hasEffect(this.playerData.condition, ConditionEffect.PETRIFIED_IMMUNE)) {
                 return;
             }
         }
@@ -1137,8 +1085,8 @@ export class Client {
     }
 
     /**
-     * Sends a packet only if the client is currently connected.
-     * @param packet The packet to send.
+     * Sends a packet only if the client is currently connected
+     * @param packet The packet to send
      */
     private send(packet: Packet): void {
         if (!this.clientSocket.destroyed && this.io) {
@@ -1171,9 +1119,8 @@ export class Client {
         }
 
         const hpToAdd = Math.trunc(this.hpLog);
-        const leftovers = this.hpLog - hpToAdd;
 
-        this.hpLog = leftovers;
+        this.hpLog = this.hpLog - hpToAdd;
         this.clientHP += hpToAdd;
 
         if (this.clientHP > this.playerData.maxHP) {

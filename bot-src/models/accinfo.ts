@@ -19,6 +19,7 @@ export interface Account {
     guid: string;
     password: string;
     serverPref: string;
+    token?: string;
     charInfo?: CharacterInfo;
     proxy?: Proxy;
     pathfinder?: boolean;
@@ -40,4 +41,13 @@ export interface CharacterInfo {
 export interface LocalServerSettings {
     enabled: boolean;
     port?: number;
+}
+
+/**
+ * The accessToken config used by the AppEngine and in-game
+ */
+export interface AccessToken {
+    token: string;
+    timestamp: number;
+    expiration: number;
 }

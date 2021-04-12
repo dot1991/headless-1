@@ -1,6 +1,5 @@
 import {ObjectData, ObjectStatusData, StatData, StatType} from '../../realmlib/net';
 import {PlayerData} from '../models';
-import {Logger} from '../services';
 
 /**
  * Processes the `data` and returns the resulting PlayerData object

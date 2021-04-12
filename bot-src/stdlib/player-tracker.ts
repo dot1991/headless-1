@@ -1,10 +1,10 @@
 import {EventEmitter} from 'events';
-import {NewTickPacket, UpdatePacket} from '../../realmlib/net';
-import {Events} from '../models/events';
+import {NewTickPacket, UpdatePacket, Classes} from '../../realmlib/net';
+import {Events} from '../models';
 import {Runtime} from '../runtime';
 import * as parsers from '../util/parsers';
-import {Client, Library, PacketHook} from './../core';
-import {Classes, PlayerData} from './../models';
+import {Client, Library, PacketHook} from '../core';
+import {PlayerData} from '../models';
 
 /**
  * An event listener for events emitted by the `PlayerTracker`.

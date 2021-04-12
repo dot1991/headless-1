@@ -1,6 +1,6 @@
-import {Environment} from '../runtime/environment';
-import {ActivateInfo, GameObject, Tile} from './../models';
-import {Logger, LogLevel} from './../services';
+import {Environment} from '../runtime';
+import {ActivateInfo, GameObject, Tile} from '../models';
+import {Logger, LogLevel} from '../services';
 
 export class ResourceManager {
 

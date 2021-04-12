@@ -5,9 +5,9 @@ import {HeapItem} from './heap-item';
  */
 export class Heap<T extends HeapItem<T>> {
 
-    private items: T[];
+    private readonly items: T[];
     private heapSize: number;
-    private maxHeapSize: number;
+    private readonly maxHeapSize: number;
 
     constructor(maxHeapSize: number) {
         this.heapSize = 0;

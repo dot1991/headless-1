@@ -204,17 +204,15 @@ export class Runtime extends EventEmitter {
 
         Logger.log('Runtime', `Loading ${account.alias}...`, LogLevel.Debug);
 
-        // get the server list and char info
         return Promise.all([
             this.accountService.getServerList(),
             this.accountService.getCharacterInfo(account.guid, account.password, account.proxy),
-        ]).then(([servers, charInfo]) => {
+        ]).then(([serverList, charInfo]) => {
             account.charInfo = charInfo;
 
-            // make sure the server exists
             let server: Server;
-            if (servers[account.serverPref]) {
-                server = servers[account.serverPref];
+            if (serverList.servers[account.serverPref]) {
+                server = serverList.servers[account.serverPref];
             } else {
                 if (isIP(account.serverPref) !== 0) {
                     server = {
@@ -222,11 +220,11 @@ export class Runtime extends EventEmitter {
                         name: `IP: ${account.serverPref}`,
                     };
                 } else {
-                    const keys = Object.keys(servers);
+                    const keys = Object.keys(serverList);
                     if (keys.length === 0) {
                         throw new Error('Server list is empty.');
                     }
-                    server = servers[keys[Math.floor(Math.random() * keys.length)]];
+                    server = serverList.servers[keys[Math.floor(Math.random() * keys.length)]];
                     Logger.log(account.alias, `Preferred server not found. Using ${server.name} instead.`, LogLevel.Warning);
                 }
             }

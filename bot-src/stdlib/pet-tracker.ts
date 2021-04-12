@@ -1,7 +1,7 @@
 import {EventEmitter} from 'events';
 import {NewTickPacket, ObjectStatusData, StatType, UpdatePacket} from '../../realmlib/net';
 import {Events} from '../models';
-import {PetData} from '../models/pets';
+import {PetData} from '../models';
 import {Runtime} from '../runtime';
 import {Client, Library, PacketHook} from '../core';
 
@@ -68,7 +68,7 @@ export class PetTracker {
         }
         for (const obj of update.newObjects) {
             if (this.runtime.resources.pets[obj.objectType] !== undefined) {
-                const pet = this.parsePetData(obj.status);
+                const pet = PetTracker.parsePetData(obj.status);
                 this.trackedPets[client.guid].push(pet);
                 this.emitter.emit('enter', pet, client);
             }
@@ -92,14 +92,14 @@ export class PetTracker {
         for (const status of newTick.statuses) {
             for (let n = 0; n < this.trackedPets[client.guid].length; n++) {
                 if (status.objectId === this.trackedPets[client.guid][n].objectId) {
-                    this.trackedPets[client.guid][n] = this.parsePetData(status, this.trackedPets[client.guid][n]);
+                    this.trackedPets[client.guid][n] = PetTracker.parsePetData(status, this.trackedPets[client.guid][n]);
                     break;
                 }
             }
         }
     }
 
-    private parsePetData(status: ObjectStatusData, existing?: PetData): PetData {
+    private static parsePetData(status: ObjectStatusData, existing?: PetData): PetData {
         if (!existing) {
             existing = {} as PetData;
         }

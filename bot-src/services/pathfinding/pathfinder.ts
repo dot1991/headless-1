@@ -9,7 +9,7 @@ import {NodeUpdate} from './node-update';
  */
 export class Pathfinder {
     private nodes: Node[];
-    private w: number;
+    private readonly w: number;
 
     constructor(mapWidth: number, walkableNodes?: NodeUpdate[]) {
         this.w = mapWidth;
@@ -47,7 +47,7 @@ export class Pathfinder {
                 if (currentNode.x === end.x && currentNode.y === end.y) {
                     openSet = null;
                     closedSet = null;
-                    resolve(this.retracePath(startNode, endNode));
+                    resolve(Pathfinder.retracePath(startNode, endNode));
                     return;
                 }
 
@@ -56,10 +56,10 @@ export class Pathfinder {
                     if (!neighbor.walkable || closedSet.contains(neighbor)) {
                         continue;
                     }
-                    const moveCost = currentNode.gCost + this.getDistance(currentNode, neighbor);
+                    const moveCost = currentNode.gCost + Pathfinder.getDistance(currentNode, neighbor);
                     if (moveCost < neighbor.gCost || !openSet.contains(neighbor)) {
                         neighbor.gCost = moveCost;
-                        neighbor.hCost = this.getDistance(neighbor, endNode);
+                        neighbor.hCost = Pathfinder.getDistance(neighbor, endNode);
                         neighbor.parent = currentNode;
 
                         if (!openSet.contains(neighbor)) {
@@ -91,7 +91,7 @@ export class Pathfinder {
         this.nodes = null;
     }
 
-    private simplifyPath(path: Node[]): Point[] {
+    private static simplifyPath(path: Node[]): Point[] {
         if (path.length < 2) {
             if (path.length === 0) {
                 return [];
@@ -145,15 +145,14 @@ export class Pathfinder {
         return waypoints;
     }
 
-    private retracePath(start: Node, end: Node): Point[] {
+    private static retracePath(start: Node, end: Node): Point[] {
         const path: Node[] = [];
         let currentNode = end;
         while (currentNode !== start) {
             path.push(currentNode);
             currentNode = currentNode.parent;
         }
-        const points = this.simplifyPath(path.reverse());
-        return points;
+        return Pathfinder.simplifyPath(path.reverse());
     }
 
     private getIndex(x: number, y: number): number {
@@ -186,7 +185,7 @@ export class Pathfinder {
         return neighbors;
     }
 
-    private getDistance(nodeA: Node, nodeB: Node): number {
+    private static getDistance(nodeA: Node, nodeB: Node): number {
         const distX = Math.abs(nodeA.x - nodeB.x);
         const distY = Math.abs(nodeA.y - nodeB.y);
 
